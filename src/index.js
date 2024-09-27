@@ -10,6 +10,9 @@ import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import Chat from './Pages/Chat';
 import Profile from './Pages/Profile';
+import Notification from "./Pages/Notification"
+import PermissionDenied from './Pages/PermissionDenied';
+import Role from './Pages/Role';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -17,11 +20,15 @@ const router = createBrowserRouter(
   createRoutesFromElements(
     <Route>
       <Route path='/' element={<BaseLayout />} >
-        <Route path='' element={<DashBoard />} />
         <Route path='login' element={<Login />} />
-        <Route path='signup' element={<Register/>} />
-        <Route path='chat' element={<Chat/>} />
-        <Route path='profile' element={<Profile/>} />
+        <Route path='signup' element={<Register />} />
+        <Route path='chat' element={<Chat />} />
+        <Route path='profile' element={<Profile />} />
+        <Route path='notification' element={<Notification />} />
+        <Route path='permissiondenied' element={<PermissionDenied />} />
+        <Route path='role' element={<Role />} >
+          <Route path='dashboard/:id' element={<DashBoard />} />
+        </Route>
       </Route>
     </Route>
   )

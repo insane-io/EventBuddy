@@ -156,7 +156,6 @@ const Register = () => {
           />
           <div className="form-border"></div>
           <button
-            type="submit"
             onClick={handleSave}
             className="bg-[#FF6B66] hover:bg-gray-900 w-full text-white font-thin py-2 px-4 rounded-xl focus:outline-none focus:shadow-outline mt-5"
           >

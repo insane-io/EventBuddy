@@ -6,7 +6,7 @@ import axios from 'axios'
 const Profile = () => {
 
     
-    const { setLogin, setuserName } = useContext(MyContext)
+    const { setLogin } = useContext(MyContext)
     const image = "https://www.w3schools.com/howto/img_avatar.png";
 
     const navigate = useNavigate()
@@ -21,7 +21,8 @@ const Profile = () => {
                     }
                 })
                 setDone(res.data)
-                setuserName(res.data.user.email)
+                console.log(res.data.user.email)
+                localStorage.setItem("userName", res.data.user.email)
             } catch (error) {
                 console.error(error)
             }

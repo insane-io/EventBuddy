@@ -6,7 +6,7 @@ import { MyContext } from '../Context/MyContext';
 
 const Chat = () => {
 
-    const {userName} = useContext(MyContext)
+    const userName  = localStorage.getItem("userName")
     const users = [
         { id: 1, name: 'Karan' },
         { id: 2, name: 'Rahul' },
@@ -28,7 +28,7 @@ const Chat = () => {
 
     useEffect(() => {
         const ws = new WebSocket("ws://localhost:8001/ws/chat/1/");
-        
+
         ws.onopen = () => {
             console.log("WebSocket connection established");
         };
@@ -52,6 +52,8 @@ const Chat = () => {
         };
     }, [handleWebSocketMessage]);
 
+    console.log(messages)
+
     useEffect(() => {
         async function getChats() {
             try {
@@ -62,8 +64,10 @@ const Chat = () => {
                 });
                 const formattedMessages = res.data.map(d => ({
                     message: d.content,
-                    sender: d.sender.username 
+                    sender: d.sender.username,
+                    name: d.sender.first_name
                 }));
+                console.log(res.data[0].sender.first_name)
                 setMessages(formattedMessages);
             } catch (error) {
                 console.log(error);
@@ -105,25 +109,28 @@ const Chat = () => {
                         <div key={index} className='p-2 mb-2'>
                             {msg.sender === userName ? (
                                 <div className='flex justify-end'>
-                                    <div className='border-2 p-3 max-w-96'>
-                                        <span>{msg.message}</span>
+                                    <div className='rounded-xl p-3 max-w-96 bg-[#FFCBBE]'>
+                                        <span className='text-lg'>{msg.message}</span>
                                     </div>
                                 </div>
                             ) : (
-                                <div>
-                                    <span>{msg.message}</span>
+                                <div className='flex justify-start'>
+                                    <div className='rounded-xl p-3 max-w-96 bg-gray-300'>
+                                        <h1 className='text-sm font-semibold mb-2 underline text-[#ff967b]'>{msg.name}</h1>
+                                        <span className='text-lg '>{msg.message}</span>
+                                    </div>
                                 </div>
                             )}
                         </div>
                     ))}
                 </div>
                 <div className='mt-5 flex items-center gap-4'>
-                    <input 
-                        type="text" 
-                        value={text} 
-                        onChange={handleInput} 
-                        className='w-full p-3 rounded-xl focus:outline-none' 
-                        placeholder='Type a message...' 
+                    <input
+                        type="text"
+                        value={text}
+                        onChange={handleInput}
+                        className='w-full p-3 rounded-xl focus:outline-none'
+                        placeholder='Type a message...'
                         onKeyPress={(e) => e.key === 'Enter' && sendMessage()}
                     />
                     <IoMdSend className='cursor-pointer size-9' onClick={sendMessage} />
