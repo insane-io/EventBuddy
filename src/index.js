@@ -10,6 +10,10 @@ import Login from "./Pages/Login";
 import Register from "./Pages/Register";
 import Chat from './Pages/Chat';
 import Profile from './Pages/Profile';
+import Choices from './Pages/Choices';
+import Orgform from './Pages/Orgform';
+import Myevent from './Pages/Myevent';
+import Orglanding from './Pages/Orglanding';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -22,6 +26,11 @@ const router = createBrowserRouter(
         <Route path='signup' element={<Register/>} />
         <Route path='chat' element={<Chat/>} />
         <Route path='profile' element={<Profile/>} />
+        <Route path='choices' element={<Choices/>} />
+        <Route path='orgform' element={<Orgform/>} />
+        <Route path='myevent' element={<Myevent/>} />
+        <Route path='orglanding' element={<Orglanding/>} />
+
       </Route>
     </Route>
   )
