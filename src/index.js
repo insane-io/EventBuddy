@@ -14,6 +14,9 @@ import Choices from './Pages/Choices';
 import Orgform from './Pages/Orgform';
 import Myevent from './Pages/Myevent';
 import Orglanding from './Pages/Orglanding';
+import Mytasks from './Pages/Mytasks';
+import Landing from './Pages/Landing';
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -30,6 +33,10 @@ const router = createBrowserRouter(
         <Route path='orgform' element={<Orgform/>} />
         <Route path='myevent' element={<Myevent/>} />
         <Route path='orglanding' element={<Orglanding/>} />
+        <Route path='mytasks' element={<Mytasks/>} />
+        <Route path='landing' element={<Landing/>} />
+        
+        
 
       </Route>
     </Route>
