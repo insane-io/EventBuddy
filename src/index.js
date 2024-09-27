@@ -1,13 +1,37 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import App from './App';
 import reportWebVitals from './reportWebVitals';
+import { UserProvider } from "./Context/MyContext"
+import { createBrowserRouter, createRoutesFromElements, Route, RouterProvider } from 'react-router-dom';
+import BaseLayout from './BaseLayout';
+import DashBoard from './Pages/DashBoard';
+import Login from "./Pages/Login";
+import Register from "./Pages/Register";
+import Chat from './Pages/Chat';
+import Profile from './Pages/Profile';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
+
+const router = createBrowserRouter(
+  createRoutesFromElements(
+    <Route>
+      <Route path='/' element={<BaseLayout />} >
+        <Route path='' element={<DashBoard />} />
+        <Route path='login' element={<Login />} />
+        <Route path='signup' element={<Register/>} />
+        <Route path='chat' element={<Chat/>} />
+        <Route path='profile' element={<Profile/>} />
+      </Route>
+    </Route>
+  )
+)
+
 root.render(
   <React.StrictMode>
-    <App />
+    <UserProvider>
+      <RouterProvider router={router} />
+    </UserProvider>
   </React.StrictMode>
 );
 
