@@ -1,7 +1,117 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { useParams } from 'react-router-dom';
+import axiosInstance from "../Axios/axios";
 
 const DashBoard = () => {
   const [page, setPage] = useState("Tasks");
+  const [form, setForm] = useState(false);
+  const { id } = useParams();
+  const [taskData, setTaskData] = useState({
+    title: '',
+    description: '',
+    assigned_to: '',
+    assignedName: '',
+    start_date: '',
+    end_date: '',
+    priority: '',
+    status: '',
+    event: id
+  });
+  const [dummyCollaborators, setDummyCollaborators] = useState([]);
+  const [showCollaborators, setShowCollaborators] = useState(false);
+  const [filteredCollaborators, setFilteredCollaborators] = useState([]);
+  const collaboratorRef = useRef(null);
+  const [tableData, setTableData] = useState([]);
+
+  useEffect(() => {
+    async function getStaff() {
+      try {
+        const res = await axiosInstance.get("http://127.0.0.1:8000/event/get_all_staff/");
+        setDummyCollaborators(res.data);
+      } catch (error) {
+        console.log(error);
+      }
+    }
+    getStaff();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (collaboratorRef.current && !collaboratorRef.current.contains(event.target)) {
+        setShowCollaborators(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setTaskData({
+      ...taskData,
+      [name]: value,
+    });
+
+    if (name === 'assignedName') {
+      filterCollaborators(value);
+    }
+  };
+
+  const filterCollaborators = (searchTerm) => {
+    const filtered = dummyCollaborators.filter(collaborator =>
+      collaborator.user.first_name.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      collaborator.user.last_name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredCollaborators(filtered);
+    setShowCollaborators(true);
+  };
+  const handleCollaboratorSelect = (collaborator) => {
+    setTaskData({
+      ...taskData,
+      assigned_to: collaborator.user.id,
+      assignedName: `${collaborator.user.first_name} ${collaborator.user.last_name}`
+    });
+    console.log(collaborator.id)
+    setShowCollaborators(false)
+  };
+
+  const handleFormSubmit = async () => {
+    console.log("Form Submitted with Data:", taskData);
+    try {
+      const res = await axiosInstance.post('event/create_tasks/', taskData)
+      // console.log(res.data);
+    } catch (error) {
+      console.error(error)
+    }
+    setTaskData({
+      title: '',
+      description: '',
+      assigned_to: '',
+      assignedName: '',
+      start_date: '',
+      end_date: '',
+      priority: '',
+      status: ''
+    });
+    setForm(false);
+  };
+
+  useEffect(() => {
+    async function getData() {
+      try {
+        const res = await axiosInstance.get(`event/get_task_org/?event_id=${id}`);
+        setTableData(res.data);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    getData();
+  }, [handleFormSubmit]);
+
+  console.log(dummyCollaborators)
 
   return (
     <div className='h-[38.45rem] flex'>
@@ -14,10 +124,163 @@ const DashBoard = () => {
           <button onClick={() => setPage("Calendar")} className={`py-4 w-52 rounded-2xl text-xl ${page === "Calendar" ? "bg-[#FFCBBE]" : ""} hover:bg-[#FFCBBE]`}>Calendar</button>
         </div>
       </div>
-      <div className='p-3 w-10/12 flex flex-col items-center'>
+      <div className='p-3 w-10/12 flex flex-col items-center overflow-y-auto px-10'>
         <h1 className='text-2xl font-semibold my-5'>Wedding </h1>
-        {
-          page === "Tasks" ? (
+        {page === "Tasks" ? (
+          <>
+            <div className='w-full justify-start'>
+              <button onClick={() => setForm(!form)} className='w-32 p-3 rounded-lg my-3 bg-[#FFCBBE]'>Add Task</button>
+            </div>
+            {form && (
+              <>
+                <div className='flex flex-col items-center w-full gap-y-2 my-4'>
+                  <div className='flex justify-start w-full gap-20 '>
+                    <h1 className='w-1/12 text-xl'>Title</h1>
+                    <input
+                      type="text"
+                      name="title"
+                      value={taskData.title}
+                      onChange={handleInputChange}
+                      className='border-2 w-full h-10 px-3 rounded-md'
+                      placeholder='Enter Task Name '
+                    />
+                  </div>
+                  <div className='flex justify-start w-full gap-20 '>
+                    <h1 className='w-1/12 text-xl'>Sub Title</h1>
+                    <textarea
+                      name="description"
+                      value={taskData.description}
+                      onChange={handleInputChange}
+                      className='border-2 w-full rounded-md px-3'
+                      placeholder='Enter Description of the work'
+                    />
+                  </div>
+                  <div className='flex justify-start w-full gap-20 relative' ref={collaboratorRef}>
+                    <h1 className='w-1/12 text-xl'>Assigned</h1>
+                    <div className='w-full'>
+                      <input
+                        type="text"
+                        name="assignedName"
+                        value={taskData.assignedName}
+                        onChange={handleInputChange}
+                        onFocus={() => setShowCollaborators(true)}
+                        className='border-2 w-full h-10 px-3 rounded-md'
+                        placeholder='Search for collaborators'
+                      />
+                      {showCollaborators && filteredCollaborators.length > 0 && (
+                        <div className='absolute z-10 w-full bg-white border rounded-md shadow-lg mt-1'>
+                          <ul className='max-h-40 overflow-y-auto'>
+                            {filteredCollaborators.map(collaborator => (
+                              <li
+                                key={collaborator.id}
+                                onClick={() => handleCollaboratorSelect(collaborator)}
+                                className='p-2 hover:bg-gray-100 cursor-pointer'
+                              >
+                                {collaborator.user.first_name} {collaborator.user.last_name}
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className='flex justify-start w-full gap-20 '>
+                    <h1 className='w-1/12 text-xl'>Start</h1>
+                    <input
+                      type="date"
+                      name="start_date"
+                      value={taskData.start_date}
+                      onChange={handleInputChange}
+                      className='border-2 w-full h-10 px-3 rounded-md'
+                    />
+                  </div>
+                  <div className='flex justify-start w-full gap-20 '>
+                    <h1 className='w-1/12 text-xl'>End</h1>
+                    <input
+                      type="date"
+                      name="end_date"
+                      value={taskData.end_date}
+                      onChange={handleInputChange}
+                      className='border-2 w-full h-10 px-3 rounded-md'
+                    />
+                  </div>
+                  <div className="flex justify-start w-full gap-20 items-center">
+                    <label className="block text-gray-700 text-sm w-1/12 font-bold mb-2">Priority</label>
+                    <div className="flex items-center">
+                      <input
+                        className="mr-2"
+                        type="radio"
+                        id="highPriority"
+                        name="priority"
+                        value="high"
+                        checked={taskData.priority === 'high'}
+                        onChange={handleInputChange}
+                      />
+                      <label htmlFor="highPriority" className="mr-4">High</label>
+                      <input
+                        className="mr-2"
+                        type="radio"
+                        id="mediumPriority"
+                        name="priority"
+                        value="medium"
+                        checked={taskData.priority === 'medium'}
+                        onChange={handleInputChange}
+                      />
+                      <label htmlFor="mediumPriority" className="mr-4">Medium</label>
+                      <input
+                        className="mr-2"
+                        type="radio"
+                        id="lowPriority"
+                        name="priority"
+                        value="low"
+                        checked={taskData.priority === 'low'}
+                        onChange={handleInputChange}
+                      />
+                      <label htmlFor="lowPriority">Low</label>
+                    </div>
+                    <div className='flex items-center gap-5'>
+                      <label className="block text-gray-700 text-sm font-bold mb-2">Status</label>
+                      <div className="flex items-center">
+                        <input
+                          className="mr-2"
+                          type="radio"
+                          id="statusNew"
+                          name="status"
+                          value="new"
+                          checked={taskData.status === 'new'}
+                          onChange={handleInputChange}
+                        />
+                        <label htmlFor="statusNew" className="mr-4">New</label>
+                        <input
+                          className="mr-2"
+                          type="radio"
+                          id="statusInProgress"
+                          name="status"
+                          value="inProgress"
+                          checked={taskData.status === 'inProgress'}
+                          onChange={handleInputChange}
+                        />
+                        <label htmlFor="statusInProgress" className="mr-4">In Progress</label>
+                        <input
+                          className="mr-2"
+                          type="radio"
+                          id="statusCompleted"
+                          name="status"
+                          value="completed"
+                          checked={taskData.status === 'completed'}
+                          onChange={handleInputChange}
+                        />
+                        <label htmlFor="statusCompleted">Completed</label>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="flex justify-end gap-5 my-5">
+                    <button onClick={() => setForm(false)} className="bg-blue-500 rounded-lg text-white w-20 py-3 hover:bg-blue-600">Cancel</button>
+                    <button onClick={handleFormSubmit} className="bg-green-500 rounded-lg text-white w-20 py-3 hover:bg-green-600">Save</button>
+                  </div>
+                </div>
+              </>
+            )}
             <table className="min-w-full bg-white border">
               <thead>
                 <tr>
@@ -27,42 +290,38 @@ const DashBoard = () => {
                   <th className="px-4 py-2 border">Status</th>
                   <th className="px-4 py-2 border">Due Date</th>
                   <th className="px-4 py-2 border">Assigned To</th>
-                  <th className="px-4 py-2 border">Actions</th>
                 </tr>
               </thead>
               <tbody>
-                <tr>
-                  <td className="px-4 py-2 border">1</td>
-                  <td className="px-4 py-2 border">Chat Modal App</td>
-                  <td className="px-4 py-2 border">
-                    <span className="text-white bg-blue-500 py-1 px-2 rounded">High</span>
-                  </td>
-                  <td className="px-4 py-2 border">New</td>
-                  <td className="px-4 py-2 border">2020-11-05</td>
-                  <td className="px-4 py-2 border">Mostafa</td>
-                  <td className="px-4 py-2 border">
-                    <button className="text-blue-500 hover:underline mr-2">✏️</button>
-                    <button className="text-red-500 hover:underline">🗑️</button>
-                  </td>
-                </tr>
+                {tableData.map((d, i) => (
+                  <tr key={i}>
+                    <td className="px-4 py-2 border">{d.id}</td>
+                    <td className="px-4 py-2 border">{d.title}</td>
+                    <td className="px-4 py-2 border">
+                      <span className="text-white bg-blue-500 py-1 px-2 rounded">{d.priority}</span>
+                    </td>
+                    <td className="px-4 py-2 border">{d.status}</td>
+                    <td className="px-4 py-2 border">{d.end_date}</td>
+                    <td className="px-4 py-2 border">{d.assigned_to.user.first_name} {d.assigned_to.user.last_name}</td>
+                  </tr>
+                ))}
               </tbody>
             </table>
-          ) : page === "Expense Tracker" ? (
-            <div className='flex flex-col items-center'>
-              <h1>Expense Tracker</h1>
-              <img src="https://www.jaspersoft.com/content/dam/jaspersoft/images/graphics/infographics/pie-chart-example.svg" alt="" />
-            </div>
-          ) : page === "Vendors" ? (
-            <div>
-              <h1>Vendors</h1>
-            </div>
-          ) : page === "Calendar" ? (
-            <div>
-              <h1>Calendar</h1>
-            </div>
-          ) : null
-        }
-
+          </>
+        ) : page === "Expense Tracker" ? (
+          <div className='flex flex-col items-center'>
+            <h1>Expense Tracker</h1>
+            <img src="https://www.jaspersoft.com/content/dam/jaspersoft/images/graphics/infographics/pie-chart-example.svg" alt="" />
+          </div>
+        ) : page === "Vendors" ? (
+          <div>
+            <h1>Vendors</h1>
+          </div>
+        ) : page === "Calendar" ? (
+          <div>
+            <h1>Calendar</h1>
+          </div>
+        ) : null}
       </div>
     </div>
   );

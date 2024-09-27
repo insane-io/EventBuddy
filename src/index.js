@@ -13,6 +13,10 @@ import Profile from './Pages/Profile';
 import Notification from "./Pages/Notification"
 import PermissionDenied from './Pages/PermissionDenied';
 import Role from './Pages/Role';
+import Choices from './Pages/Choices';
+import Orgform from './Pages/Orgform';
+import Myevent from './Pages/Myevent';
+import Orglanding from './Pages/Orglanding';
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -28,7 +32,15 @@ const router = createBrowserRouter(
         <Route path='permissiondenied' element={<PermissionDenied />} />
         <Route path='role' element={<Role />} >
           <Route path='dashboard/:id' element={<DashBoard />} />
+          <Route path='myevents' element={<Myevent />} />
         </Route>
+        <Route path='signup' element={<Register />} />
+        <Route path='chat' element={<Chat />} />
+        <Route path='profile' element={<Profile />} />
+        <Route path='choices' element={<Choices />} />
+        <Route path='orgform' element={<Orgform />} />
+        <Route path='orglanding' element={<Orglanding />} />
+
       </Route>
     </Route>
   )

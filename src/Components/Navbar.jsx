@@ -20,7 +20,7 @@ function Navbar() {
             <>
               {
                 role === "organiser" && (
-                  <NavLink to="/role/dashboard">
+                  <NavLink to="/role/myevents">
                     <SiSimpleanalytics className='size-8' />
                   </NavLink>
                 )
