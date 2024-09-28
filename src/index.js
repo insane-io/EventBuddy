@@ -16,6 +16,7 @@ import Myevent from './Pages/Myevent';
 import Orglanding from './Pages/Orglanding';
 import Mytasks from './Pages/Mytasks';
 import Landing from './Pages/Landing';
+import Calender from './Pages/Calender';
 
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
@@ -35,6 +36,7 @@ const router = createBrowserRouter(
         <Route path='orglanding' element={<Orglanding/>} />
         <Route path='mytasks' element={<Mytasks/>} />
         <Route path='landing' element={<Landing/>} />
+        <Route path='calender' element={<Calender/>} />
         
         
 

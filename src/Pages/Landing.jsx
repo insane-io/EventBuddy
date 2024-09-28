@@ -3,13 +3,25 @@ import landing from '../Assets/landing1.png'
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import landdd from '../Assets/landdddd.png'
+import landing3 from '../Assets/landing3.jpg'
+import landing4 from '../Assets/landing4.jpg'
+import landing5 from '../Assets/landing5.jpg'
+import landing6 from '../Assets/landing6.jpg'
+import landing7 from '../Assets/landing7.jpg'
+import landing8 from '../Assets/landing8.jpg'
+import landing9 from '../Assets/landing9.jpg'
+import landing10 from '../Assets/landing10.jpg'
+import landing11 from '../Assets/landing11.jpg'
 
 const Landing = () => {
     const [activeIndex, setActiveIndex] = useState(1); // Middle image is active by default
     const images = [
-        "https://via.placeholder.com/200x300",
-        "https://via.placeholder.com/300x400",
-        "https://via.placeholder.com/200x300"
+        landing3,
+        landing4,
+        landing5,
+        
+        
+        
     ];
 
     const handlePrev = () => {
@@ -86,25 +98,25 @@ const Landing = () => {
             <div className="p-10 m-32 rounded-xl bg-[#FAF6F5]">
                 <div className='grid grid-cols-3 gap-6 rounded-xl'>
                     <div className='col-span-1'>
-                        <img src="https://via.placeholder.com/200x300" alt="Description of Image" className="w-full h-56  object-cover rounded-3xl" />
+                        <img src={landing10} alt="Description of Image" className="w-full h-56  object-cover rounded-3xl" />
                     </div>
                     <div className='col-span-1'>
-                        <img src="https://via.placeholder.com/200x300" alt="Description of Image" className="w-full h-56  object-cover rounded-3xl" />
+                        <img src={landing11} alt="Description of Image" className="w-full h-56  object-cover rounded-3xl" />
                     </div>
                     <div className='col-span-1'>
-                        <img src="https://via.placeholder.com/200x300" alt="Description of Image" className="w-full h-56  object-cover rounded-3xl" />
+                        <img src={landing9} alt="Description of Image" className="w-full h-56  object-cover rounded-3xl" />
                     </div>
 
                 </div>
                 <div className='grid grid-cols-7 gap-6 rounded-xl'>
                     <div className='col-span-2 my-6'>
-                        <img src="https://via.placeholder.com/200x300" alt="Description of Image" className="w-full h-56  object-cover rounded-3xl" />
+                        <img src={landing8} alt="Description of Image" className="w-full h-56  object-cover rounded-3xl" />
                     </div>
                     <div className='col-span-3 my-6'>
-                        <img src="https://via.placeholder.com/200x300" alt="Description of Image" className="w-full h-56  object-cover rounded-3xl" />
+                        <img src={landing7} alt="Description of Image" className="w-full h-56  object-cover rounded-3xl" />
                     </div>
                     <div className='col-span-2 my-6'>
-                        <img src="https://via.placeholder.com/200x300" alt="Description of Image" className="w-full h-56  object-cover rounded-3xl" />
+                        <img src={landing6} alt="Description of Image" className="w-full h-56  object-cover rounded-3xl" />
                     </div>
                 </div>
 
@@ -114,7 +126,7 @@ const Landing = () => {
             <div className='bg-[#F3F3F3]'>
                 <div className='grid grid-cols-2 m-24'>
                     <div className='col-span-1 m-8'>
-                        <h1 className='text-7xl font-bold'>Plan, Organize, and
+                        <h1 className='text-6xl font-bold'>Plan, Organize, and
                             <br /> Execute Events Without the Hassle
                         </h1>
                         <p className='text-[#696969] mt-9 w- mb-9 text-xl'>Event Buddy is a collaborative platform that helps you plan and manage events with ease. Whether it’s a wedding, corporate event, or birthday party, you can assign tasks, track budgets, and get real-time updates all in one place.</p>
