@@ -1,10 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
 import axiosInstance from "../Axios/axios";
+import { Bar } from 'react-chartjs-2';
+import { Chart, registerables } from 'chart.js';
+
+Chart.register(...registerables);
 
 const DashBoard = () => {
   const [page, setPage] = useState("Tasks");
   const [form, setForm] = useState(false);
+  const [check, setCheck] = useState(false);
   const { id } = useParams();
   const [taskData, setTaskData] = useState({
     title: '',
@@ -83,6 +88,7 @@ const DashBoard = () => {
     try {
       const res = await axiosInstance.post('event/create_tasks/', taskData)
       // console.log(res.data);
+      setCheck(!check)
     } catch (error) {
       console.error(error)
     }
@@ -109,7 +115,7 @@ const DashBoard = () => {
       }
     }
     getData();
-  }, [handleFormSubmit]);
+  }, [check]);
 
   console.log(dummyCollaborators)
 
@@ -151,6 +157,94 @@ const DashBoard = () => {
     vendor.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const [statistics, setStatistics] = useState(null);  // State to hold fetched statistics data
+
+  // Fetch event statistics dynamically
+  useEffect(() => {
+    async function getStatistics() {
+      try {
+        const res = await axiosInstance.get(`http://127.0.0.1:8000/event/get_statistics/?event_id=${id}`);
+        setStatistics(res.data);
+        console.log(res.data);  // Log the fetched data for debugging
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    getStatistics();
+  }, [id]);
+
+  // Display a loading message until data is fetched
+  if (!statistics) {
+    return <div>Loading...</div>;
+  }
+
+  // Extracting task details and budget data from the fetched API data
+  const taskDetails = statistics.task_details || [];
+  const totalExpected = statistics.total_expected_budget || 0;
+  const totalActual = statistics.total_actual_budget || 0;
+
+  // Bar chart data for tasks (Expected vs. Actual budgets)
+  const taskChartData = {
+    labels: taskDetails.map(task => task.title),  // Assuming task title is stored in 'title'
+    datasets: [
+      {
+        label: 'Expected Budget',
+        data: taskDetails.map(task => task.expected_budget),  // Expected budget data
+        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+      },
+      {
+        label: 'Actual Budget',
+        data: taskDetails.map(task => task.actual_budget),  // Actual budget data
+        backgroundColor: 'rgba(255, 99, 132, 0.6)',
+        borderColor: 'rgba(255, 99, 132, 1)',
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  // Bar chart data for total budgets
+  const totalChartData = {
+    labels: ['Total Budget'],
+    datasets: [
+      {
+        label: 'Total Expected Budget',
+        data: [totalExpected],  // Total expected budget
+        backgroundColor: 'rgba(75, 192, 192, 0.6)',
+        borderColor: 'rgba(75, 192, 192, 1)',
+        borderWidth: 1,
+      },
+      {
+        label: 'Total Actual Budget',
+        data: [totalActual],  // Total actual budget
+        backgroundColor: 'rgba(255, 99, 132, 0.6)',
+        borderColor: 'rgba(255, 99, 132, 1)',
+        borderWidth: 1,
+      },
+    ],
+  };
+
+  // Chart options for better visualization
+  const options = {
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Amount ($)',
+        },
+      },
+      x: {
+        title: {
+          display: true,
+          text: 'Tasks',
+        },
+      },
+    },
+    responsive: true,
+    maintainAspectRatio: false,
+  };
   return (
     <div className='h-[38.45rem] flex'>
       <div className='w-2/12 flex flex-col items-center h-full bg-[#FFE8E2]'>
@@ -162,8 +256,8 @@ const DashBoard = () => {
           <button onClick={() => setPage("Calendar")} className={`py-4 w-52 rounded-2xl text-xl ${page === "Calendar" ? "bg-[#FFCBBE]" : ""} hover:bg-[#FFCBBE]`}>Calendar</button>
         </div>
       </div>
-      <div className='p-3 w-10/12 flex flex-col items-center overflow-y-auto px-10'>
-        <h1 className='text-2xl font-semibold my-5'>Wedding </h1>
+      <div className='p-3 w-full flex flex-col px-10 overflow-y-auto '>
+        <h1 className='text-4xl font-bold my-5'>Wedding </h1>
         {page === "Tasks" ? (
           <>
             <div className='w-full justify-start'>
@@ -347,10 +441,66 @@ const DashBoard = () => {
             </table>
           </>
         ) : page === "Expense Tracker" ? (
-          <div className='flex flex-col items-center'>
-            <h1>Expense Tracker</h1>
-            <img src="https://www.jaspersoft.com/content/dam/jaspersoft/images/graphics/infographics/pie-chart-example.svg" alt="" />
+          <div className="bg-[#FAF6F5] p-7 rounded-3xl">
+            <h1 className="text-4xl font-bold mb-4">Expense Tracker</h1>
+            <div className='grid grid-cols-2 gap-8'>
+              <div className='col-span-1'>
+                {/* Bar Chart for Individual Tasks */}
+                <h2 className="text-2xl font-normal my-4">Estimated vs. Real Budget for Tasks</h2>
+                <div className="w-full md:w-full h-80 mb-4">
+                  <Bar data={taskChartData} options={options} />
+                </div>
+              </div>
+              <div className='col-span-1'>
+                {/* Total Budget Bar Chart */}
+                <h2 className="text-2xl font-normal my-4">Total Estimated vs. Real Budget</h2>
+                <div className="w-full md:w-full h-80 mb-4">
+                  <Bar data={totalChartData} options={options} />
+                </div>
+              </div>
+            </div>
+
+            {/* Task List */}
+            <h2 className="text-2xl font-normal my-4">Task List</h2>
+            <table className="min-w-full border-collapse border border-gray-200">
+              <thead>
+                <tr>
+                  <th className="border border-gray-300 px-4 py-2">Title</th>
+                  <th className="border border-gray-300 px-4 py-2">Expected Budget</th>
+                  <th className="border border-gray-300 px-4 py-2">Actual Budget</th>
+                </tr>
+              </thead>
+              <tbody>
+                {taskDetails.map(task => (
+                  <tr key={task.task_id} className="hover:bg-gray-100">
+                    <td className="border border-gray-300 px-4 py-2">{task.title}</td>
+                    <td className="border border-gray-300 px-4 py-2">${task.expected_budget.toLocaleString()}</td>
+                    <td className="border border-gray-300 px-4 py-2">${task.actual_budget.toLocaleString()}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+            {statistics && (
+              <div className="mt-6 p-4 border rounded-lg">
+                <h2 className="text-xl font-semibold">Savings / Over-Expenditure</h2>
+                <p className="text-lg mt-2">
+                  {statistics.total_actual_budget < statistics.total_expected_budget ? (
+                    <>
+                      You saved: <span className="font-bold">${(statistics.total_expected_budget - statistics.total_actual_budget).toLocaleString()}</span>
+                    </>
+                  ) : (
+                    <>
+                      Over-expenditure: <span className="font-bold">${(statistics.total_actual_budget - statistics.total_expected_budget).toLocaleString()}</span>
+                    </>
+                  )}
+                </p>
+              </div>
+            )}
+
+            {/* Over/Under Budget Indicator */}
+            {/* You can add additional indicators here if needed */}
           </div>
+
         ) : page === "Vendors" ? (
           <div className="p-8">
             <h1 className="text-4xl font-bold mb-8">Vendors</h1>
