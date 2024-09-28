@@ -23,7 +23,7 @@ const Chat = () => {
             }
             return prevMessages;
         });
-    }, []);
+    }, [text]);
 
     useEffect(() => {
         const ws = new WebSocket(`ws://localhost:8001/ws/chat/${id}/`);
