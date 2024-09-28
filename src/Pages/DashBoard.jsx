@@ -113,6 +113,44 @@ const DashBoard = () => {
 
   console.log(dummyCollaborators)
 
+  const vendors = [
+    {
+      id: 1,
+      name: 'John Doe',
+      type: 'Caterer',
+      brand: 'Gourmet Catering',
+      product: 'Wedding Buffet',
+      budget: '$5000',
+      contact: '123-456-7890'
+    },
+    {
+      id: 2,
+      name: 'Sarah Smith',
+      type: 'Photographer',
+      brand: 'Perfect Clicks',
+      product: 'Wedding Photography',
+      budget: '$2000',
+      contact: '098-765-4321'
+    },
+    {
+      id: 3,
+      name: 'Michael Johnson',
+      type: 'Florist',
+      brand: 'Bloom Masters',
+      product: 'Floral Decorations',
+      budget: '$1500',
+      contact: '321-654-9870'
+    },
+    // Add more vendors as needed
+  ];
+
+  const [searchQuery, setSearchQuery] = useState('');
+
+  // Filter vendors based on search query
+  const filteredVendors = vendors.filter(vendor =>
+    vendor.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
   return (
     <div className='h-[38.45rem] flex'>
       <div className='w-2/12 flex flex-col items-center h-full bg-[#FFE8E2]'>
@@ -314,8 +352,37 @@ const DashBoard = () => {
             <img src="https://www.jaspersoft.com/content/dam/jaspersoft/images/graphics/infographics/pie-chart-example.svg" alt="" />
           </div>
         ) : page === "Vendors" ? (
-          <div>
-            <h1>Vendors</h1>
+          <div className="p-8">
+            <h1 className="text-4xl font-bold mb-8">Vendors</h1>
+
+            {/* Search Input */}
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search Vendor by Name..."
+              className="mb-6 p-3 w-full rounded-lg border border-gray-300"
+            />
+
+            {/* Vendor List */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {filteredVendors.map(vendor => (
+                <div key={vendor.id} className="bg-white p-6 rounded-xl shadow-lg">
+                  <h2 className="text-2xl font-bold mb-2">{vendor.name}</h2>
+                  <p className="text-gray-600 mb-1"><strong>Vendor Type:</strong> {vendor.type}</p>
+                  <p className="text-gray-600 mb-1"><strong>Brand Name:</strong> {vendor.brand}</p>
+                  <p className="text-gray-600 mb-1"><strong>Product:</strong> {vendor.product}</p>
+                  <p className="text-gray-600 mb-1"><strong>Budget:</strong> {vendor.budget}</p>
+                  <p className="text-gray-600 mb-1"><strong>Contact No:</strong> {vendor.contact}</p>
+                  <button className="mt-4 py-2 px-4 bg-blue-500 text-white rounded-lg">Contact</button>
+                </div>
+              ))}
+            </div>
+
+            {/* No results found */}
+            {filteredVendors.length === 0 && (
+              <p className="text-center text-gray-500 mt-8">No vendors found with the name "{searchQuery}".</p>
+            )}
           </div>
         ) : page === "Calendar" ? (
           <div>
