@@ -41,11 +41,11 @@ const router = createBrowserRouter(
         <Route path='staff' element={<Staff />}>
         </Route>
         <Route path='signup' element={<Register />} />
-        <Route path='chat' element={<Chat />} />
+        <Route path='chat/:id' element={<Chat />} />
         <Route path='profile' element={<Profile />} />
         <Route path='choices' element={<Choices />} />
         <Route path='orgform' element={<Orgform />} />
-        <Route path='orglanding' element={<Orglanding />} />
+        <Route path='' element={<Orglanding />} />
         <Route path='signup' element={<Register />} />
         <Route path='chat' element={<Chat />} />
         <Route path='profile' element={<Profile />} />

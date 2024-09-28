@@ -1,26 +1,29 @@
-import React, { useState } from 'react';
-import { BsFillPeopleFill } from "react-icons/bs";
-import { FaBirthdayCake } from "react-icons/fa";
-import { IoSchoolSharp } from "react-icons/io5";
-import { MdOutlineFestival } from "react-icons/md";
-import { FiPlusCircle } from "react-icons/fi";
-import { motion } from "framer-motion";
+import React, { useEffect, useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import axiosInstance from "../Axios/axios"
 
 const Orgform = () => {
-    const hello = "wedding"
+    const location = useLocation()
+    const [value, setvalue] = useState()
+    const navigate = useNavigate()
+
+    useEffect(() => {
+        setvalue(location.state.value)
+        console.log("value",value)
+    }, [])
 
     const [formData, setFormData] = useState({
-        eventTitle: '',
-        eventType: '',
+        title: '',
+        event_type: location.state.value,
         description: '',
         date: '',
-        
         endTime: '',
         venue: '',
         budget: '',
-        noOfGuests: '',
+        no_of_guests: '',
         image: null,
         contact: '',
+        organiser: null
     });
 
     const handleChange = (e) => {
@@ -32,24 +35,28 @@ const Orgform = () => {
         setFormData({ ...formData, image: e.target.files[0] });
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        console.log(formData); // This would be replaced by your form submission logic
+        console.log(formData);
+        const res = await axiosInstance.post("event/create_event/", formData)
+        navigate("/myevent")
     };
+
+    console.log("value",value)
 
     return (
         <form onSubmit={handleSubmit}>
-            <div className="bg-[#FAF6F5] rounded-lg m-24">
+            <div className="bg-[#FAF6F5] rounded-lg mx-24 mt-12">
                 <h1 className="p-7 text-4xl font-bold">Wedding Event</h1>
 
                 {/* Event Title */}
                 <div className="p-7">
-                    <label htmlFor="eventTitle" className="block text-lg font-semibold mb-2">Event Title</label>
+                    <label htmlFor="title" className="block text-lg font-semibold mb-2">Event Title</label>
                     <input
                         type="text"
-                        id="eventTitle"
-                        name="eventTitle"
-                        value={formData.eventTitle}
+                        id="title"
+                        name="title"
+                        value={formData.title}
                         onChange={handleChange}
                         className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
                         placeholder="Enter event title"
@@ -58,21 +65,21 @@ const Orgform = () => {
 
                 {/* Event Type */}
                 <div className='grid grid-cols-2'>
-                <div className="px-7 col-span-1">
-                    <label htmlFor="contact" className="block text-lg font-semibold mb-2">Contact</label>
-                    <input
-                        type="text"
-                        id="contact"
-                        name="contact"
-                        value={formData.contact}
-                        onChange={handleChange}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
-                        placeholder="Enter contact information"
-                    />
+                    <div className="px-7 col-span-1">
+                        <label htmlFor="contact" className="block text-lg font-semibold mb-2">Contact</label>
+                        <input
+                            type="text"
+                            id="contact"
+                            name="contact"
+                            value={formData.contact}
+                            onChange={handleChange}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
+                            placeholder="Enter contact information"
+                        />
+                    </div>
+
                 </div>
-                
-                </div>
-                
+
 
                 {/* Description */}
                 <div className="p-7">
@@ -89,28 +96,28 @@ const Orgform = () => {
 
                 {/* Date */}
                 <div className='grid grid-cols-2'>
-                <div className="px-7 col-span-1">
-                    <label htmlFor="date" className="block text-lg font-semibold mb-2">Date</label>
-                    <input
-                        type="date"
-                        id="date"
-                        name="date"
-                        value={formData.date}
-                        onChange={handleChange}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
-                    />
-                </div>
-                <div className="px-7 col-span-1">
-                    <label htmlFor="due_date" className="block text-lg font-semibold mb-2">Due Date</label>
-                    <input
-                        type="date"
-                        id="endTime"
-                        name="endTime"
-                        value={formData.date}
-                        onChange={handleChange}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
-                    />
-                </div>
+                    <div className="px-7 col-span-1">
+                        <label htmlFor="date" className="block text-lg font-semibold mb-2">Date</label>
+                        <input
+                            type="date"
+                            id="date"
+                            name="date"
+                            value={formData.date}
+                            onChange={handleChange}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
+                        />
+                    </div>
+                    <div className="px-7 col-span-1">
+                        <label htmlFor="due_date" className="block text-lg font-semibold mb-2">Due Date</label>
+                        <input
+                            type="date"
+                            id="endTime"
+                            name="endTime"
+                            value={formData.date}
+                            onChange={handleChange}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
+                        />
+                    </div>
                 </div>
                 {/* Venue */}
                 <div className="p-7">
@@ -128,37 +135,37 @@ const Orgform = () => {
 
                 <div className='grid grid-cols-2'>
                     {/* Budget */}
-                <div className="px-7 col-span-1">
-                    <label htmlFor="budget" className="block text-lg font-semibold mb-2">Budget</label>
-                    <input
-                        type="text"
-                        id="budget"
-                        name="budget"
-                        value={formData.budget}
-                        onChange={handleChange}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
-                        placeholder="Enter budget"
-                    />
-                </div>
+                    <div className="px-7 col-span-1">
+                        <label htmlFor="budget" className="block text-lg font-semibold mb-2">Budget</label>
+                        <input
+                            type="text"
+                            id="budget"
+                            name="budget"
+                            value={formData.budget}
+                            onChange={handleChange}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
+                            placeholder="Enter budget"
+                        />
+                    </div>
 
-                {/* Number of Guests */}
-                <div className="px-7 col-span-1">
-                    <label htmlFor="noOfGuests" className="block text-lg font-semibold mb-2">Number of Guests</label>
-                    <input
-                        type="number"
-                        id="noOfGuests"
-                        name="noOfGuests"
-                        value={formData.noOfGuests}
-                        onChange={handleChange}
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
-                        placeholder="Enter number of guests"
-                    />
-                </div>
+                    {/* Number of Guests */}
+                    <div className="px-7 col-span-1">
+                        <label htmlFor="no_of_guests" className="block text-lg font-semibold mb-2">Number of Guests</label>
+                        <input
+                            type="number"
+                            id="no_of_guests"
+                            name="no_of_guests"
+                            value={formData.no_of_guests}
+                            onChange={handleChange}
+                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
+                            placeholder="Enter number of guests"
+                        />
+                    </div>
                 </div>
 
 
                 {/* Contact */}
-                
+
 
                 {/* Image Upload */}
                 <div className="px-7">
@@ -171,115 +178,154 @@ const Orgform = () => {
                         className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
                     />
                 </div>
-                {hello === "wedding" ? (
-                <>
-                    {/* Wedding Form Fields */}
-                    <div className="p-7">
-                        <label htmlFor="bride_name" className="block text-lg font-semibold mb-2">Bride's Name</label>
-                        <input
-                            type="text"
-                            id="bride_name"
-                            name="bride_name"
-                            value={formData.bride_name}
-                            onChange={handleChange}
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
-                            placeholder="Enter bride's name"
-                        />
-                    </div>
-                    <div className="px-7">
-                        <label htmlFor="groom_name" className="block text-lg font-semibold mb-2">Groom's Name</label>
-                        <input
-                            type="text"
-                            id="groom_name"
-                            name="groom_name"
-                            value={formData.groom_name}
-                            onChange={handleChange}
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
-                            placeholder="Enter groom's name"
-                        />
-                    </div>
-                    <div className="p-7">
-                        <label htmlFor="theme" className="block text-lg font-semibold mb-2">Theme</label>
-                        <input
-                            type="text"
-                            id="theme"
-                            name="theme"
-                            value={formData.theme}
-                            onChange={handleChange}
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
-                            placeholder="Enter event theme"
-                        />
-                    </div>
-                </>
-            ) : hello === "birthday" ? (
-                <>
-                    {/* Birthday Form Fields */}
-                    <div className="px-7">
-                        <label htmlFor="birthday_name" className="block text-lg font-semibold mb-2">Birthday Person's Name</label>
-                        <input
-                            type="text"
-                            id="birthday_name"
-                            name="birthday_name"
-                            value={formData.birthday_name}
-                            onChange={handleChange}
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
-                            placeholder="Enter birthday person's name"
-                        />
-                    </div>
-                    <div className="px-7">
-                        <label htmlFor="theme" className="block text-lg font-semibold mb-2">Theme</label>
-                        <input
-                            type="text"
-                            id="theme"
-                            name="theme"
-                            value={formData.theme}
-                            onChange={handleChange}
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
-                            placeholder="Enter event theme"
-                        />
-                    </div>
-                </>
-            ) : hello === "culture" ? (
-                <>
-                    {/* Cultural Event Form Fields */}
-                    <div className="px-7">
-                        <label htmlFor="speakers_name" className="block text-lg font-semibold mb-2">Speakers' Names</label>
-                        <input
-                            type="text"
-                            id="speakers_name"
-                            name="speakers_name"
-                            value={formData.speakers_name}
-                            onChange={handleChange}
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
-                            placeholder="Enter speakers' names"
-                        />
-                    </div>
-                    <div className="px-7">
-                        <label htmlFor="host" className="block text-lg font-semibold mb-2">Host</label>
-                        <input
-                            type="text"
-                            id="host"
-                            name="host"
-                            value={formData.host}
-                            onChange={handleChange}
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
-                            placeholder="Enter host's name"
-                        />
-                    </div>
-                    <div className="px-7">
-                        <label htmlFor="agenda" className="block text-lg font-semibold mb-2">Agenda</label>
-                        <input
-                            type="text"
-                            id="agenda"
-                            name="agenda"
-                            value={formData.agenda}
-                            onChange={handleChange}
-                            className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
-                            placeholder="Enter event agenda"
-                        />
-                    </div>
-                </>
-            ) :  null}
+                {value === "wedding" ? (
+                    <>
+                        {/* Wedding Form Fields */}
+                        <div className="p-7">
+                            <label htmlFor="bride_name" className="block text-lg font-semibold mb-2">Bride's Name</label>
+                            <input
+                                type="text"
+                                id="bride_name"
+                                name="bride_name"
+                                value={formData.bride_name}
+                                onChange={handleChange}
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
+                                placeholder="Enter bride's name"
+                            />
+                        </div>
+                        <div className="px-7">
+                            <label htmlFor="groom_name" className="block text-lg font-semibold mb-2">Groom's Name</label>
+                            <input
+                                type="text"
+                                id="groom_name"
+                                name="groom_name"
+                                value={formData.groom_name}
+                                onChange={handleChange}
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
+                                placeholder="Enter groom's name"
+                            />
+                        </div>
+                        <div className="p-7">
+                            <label htmlFor="theme" className="block text-lg font-semibold mb-2">Theme</label>
+                            <input
+                                type="text"
+                                id="theme"
+                                name="theme"
+                                value={formData.theme}
+                                onChange={handleChange}
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
+                                placeholder="Enter event theme"
+                            />
+                        </div>
+                    </>
+                ) : value === "birthday" ? (
+                    <>
+                        {/* Birthday Form Fields */}
+                        <div className="px-7">
+                            <label htmlFor="bd_person" className="block text-lg font-semibold mb-2">Birthday Person's Name</label>
+                            <input
+                                type="text"
+                                id="bd_person"
+                                name="bd_person"
+                                value={formData.bd_person}
+                                onChange={handleChange}
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
+                                placeholder="Enter birthday person's name"
+                            />
+                        </div>
+                        <div className="px-7">
+                            <label htmlFor="age" className="block text-lg font-semibold mb-2">Age</label>
+                            <input
+                                type="text"
+                                id="age"
+                                name="age"
+                                value={formData.age}
+                                onChange={handleChange}
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
+                                placeholder="Enter Age"
+                            />
+                        </div>
+                    </>
+                ) : value === "culture" ? (
+                    <>
+                        {/* Cultural Event Form Fields */}
+                        <div className="px-7">
+                            <label htmlFor="speakers_name" className="block text-lg font-semibold mb-2">Speakers' Names</label>
+                            <input
+                                type="text"
+                                id="speakers_name"
+                                name="speakers_name"
+                                value={formData.speakers_name}
+                                onChange={handleChange}
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
+                                placeholder="Enter speakers' names"
+                            />
+                        </div>
+                        <div className="px-7">
+                            <label htmlFor="host" className="block text-lg font-semibold mb-2">Host</label>
+                            <input
+                                type="text"
+                                id="host"
+                                name="host"
+                                value={formData.host}
+                                onChange={handleChange}
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
+                                placeholder="Enter host's name"
+                            />
+                        </div>
+                        <div className="px-7">
+                            <label htmlFor="agenda" className="block text-lg font-semibold mb-2">Agenda</label>
+                            <input
+                                type="text"
+                                id="agenda"
+                                name="agenda"
+                                value={formData.agenda}
+                                onChange={handleChange}
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
+                                placeholder="Enter event agenda"
+                            />
+                        </div>
+                    </>
+                ) : value === "fest" ? (
+                    <>
+                        <div className="px-7">
+                            <label htmlFor="fest_name" className="block text-lg font-semibold mb-2">Fest Name</label>
+                            <input
+                                type="text"
+                                id="fest_name"
+                                name="fest_name"
+                                value={formData.fest_name}
+                                onChange={handleChange}
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
+                                placeholder="Enter birthday person's name"
+                            />
+                        </div>
+                        <div className="px-7">
+                            <label htmlFor="theme" className="block text-lg font-semibold mb-2">Theme</label>
+                            <input
+                                type="text"
+                                id="theme"
+                                name="theme"
+                                value={formData.theme}
+                                onChange={handleChange}
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
+                                placeholder="Enter event Theme"
+                            />
+                        </div>
+                        <div className="px-7">
+                            <label htmlFor="college_name" className="block text-lg font-semibold mb-2">College name</label>
+                            <input
+                                type="text"
+                                id="college_name"
+                                name="college_name"
+                                value={formData.college_name}
+                                onChange={handleChange}
+                                className="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#FC5B5B]"
+                                placeholder="Enter College Name"
+                            />
+                        </div>
+                    </>) : value === "custom" ?
+                    (<></>) : null}
 
 
                 {/* Submit Button */}

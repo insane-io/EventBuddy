@@ -1,8 +1,11 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import wedding from '../Assets/wedding2.jpg';
+import { useNavigate } from 'react-router-dom';
 
 const Orglanding = () => {
+
+    const navigate = useNavigate()
     return (
         <>
             <div className="flex justify-center items-center m-24 rounded-xl bg-[#FAF6F5]">
@@ -17,6 +20,7 @@ const Orglanding = () => {
                             whileHover={{ scale: 1.05 }}
                             whileTap={{ scale: 0.95 }}
                             className="bg-red-500 text-white py-3 px-6 rounded-lg"
+                            onClick={()=>navigate("/choices")}
                         >
                             Create Your Event
                         </motion.button>
@@ -34,9 +38,6 @@ const Orglanding = () => {
                                 alt="Wedding Couple"
                                 className="object-cover w-full  "
                             />
-
-
-
                         </motion.div>
                     </div>
                 </div>

@@ -4,6 +4,7 @@ import { MyContext } from '../Context/MyContext'
 import { IoChatbubbleEllipsesOutline } from "react-icons/io5";
 import { IoIosNotificationsOutline } from "react-icons/io";
 import { SiSimpleanalytics } from "react-icons/si";
+import { GrTask } from "react-icons/gr";
 
 function Navbar() {
 
@@ -27,8 +28,8 @@ function Navbar() {
               }
               {
                 role === "staff" && (
-                  <NavLink to="/staff/mytasks">
-                    <h1>Tasks</h1>
+                  <NavLink to="/mytasks">
+                    <GrTask className='size-8'/>
                   </NavLink>
                 )
               }

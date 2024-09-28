@@ -10,9 +10,9 @@ const Notification = () => {
     const handleNotification = async(id) => {
         try {
             await axiosInstance.post('event/is_seen/', {id})
-            navigate("/role/tasks")
+            navigate("/mytasks")
         } catch (error) {
-            
+            console.log(error)
         }
     }
 
