@@ -232,7 +232,7 @@ const DashBoard = () => {
         beginAtZero: true,
         title: {
           display: true,
-          text: 'Amount ($)',
+          text: 'Amount (₹)',
         },
       },
       x: {
@@ -474,8 +474,8 @@ const DashBoard = () => {
                 {taskDetails.map(task => (
                   <tr key={task.task_id} className="hover:bg-gray-100">
                     <td className="border border-gray-300 px-4 py-2">{task.title}</td>
-                    <td className="border border-gray-300 px-4 py-2">${task.expected_budget.toLocaleString()}</td>
-                    <td className="border border-gray-300 px-4 py-2">${task.actual_budget.toLocaleString()}</td>
+                    <td className="border border-gray-300 px-4 py-2">₹{task.expected_budget.toLocaleString()}</td>
+                    <td className="border border-gray-300 px-4 py-2">₹{task.actual_budget.toLocaleString()}</td>
                   </tr>
                 ))}
               </tbody>
@@ -486,11 +486,11 @@ const DashBoard = () => {
                 <p className="text-lg mt-2">
                   {statistics.total_actual_budget < statistics.total_expected_budget ? (
                     <>
-                      You saved: <span className="font-bold">${(statistics.total_expected_budget - statistics.total_actual_budget).toLocaleString()}</span>
+                      You saved: <span className="font-bold">₹{(statistics.total_expected_budget - statistics.total_actual_budget).toLocaleString()}</span>
                     </>
                   ) : (
                     <>
-                      Over-expenditure: <span className="font-bold">${(statistics.total_actual_budget - statistics.total_expected_budget).toLocaleString()}</span>
+                      Over-expenditure: <span className="font-bold">₹{(statistics.total_actual_budget - statistics.total_expected_budget).toLocaleString()}</span>
                     </>
                   )}
                 </p>
