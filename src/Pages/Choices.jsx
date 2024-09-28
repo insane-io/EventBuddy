@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BsFillPeopleFill } from "react-icons/bs";
 import { FaBirthdayCake } from "react-icons/fa";
 import { IoSchoolSharp } from "react-icons/io5";
@@ -7,6 +7,8 @@ import { FiPlusCircle } from "react-icons/fi";
 import { motion } from "framer-motion";
 
 const Choices = () => {
+
+
     return (
         <>
             <div className="bg-[#FAF6F5] rounded-lg m-10">
@@ -22,11 +24,11 @@ const Choices = () => {
                         <motion.div
                             key={index}
                             whileHover={{
-                                scale: 1.1,       // Scale up on hover
-                                borderColor: "#E57373", // Change border color
-                                boxShadow: "0px 8px 15px rgba(0, 0, 0, 0.1)", // Add shadow effect
+                                scale: 1.05,
+                                borderColor: "#E57373",
+                                boxShadow: "0px 8px 15px rgba(0, 0, 0, 0.1)",
                             }}
-                            className="bg-[#F8E0E0] rounded-lg m-2 flex flex-col items-center border-2 border-transparent"
+                            className="bg-[#F8E0E0] rounded-lg cursor-pointer m-2 flex flex-col items-center border-2 border-transparent"
                         >
                             <item.icon className="text-6xl mt-4" />
                             <h1 className="text-2xl font-normal text-center pt-2 mb-9">{item.label}</h1>

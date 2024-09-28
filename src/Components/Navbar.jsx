@@ -27,7 +27,7 @@ function Navbar() {
               }
               {
                 role === "staff" && (
-                  <NavLink to="/role/tasks">
+                  <NavLink to="/staff/mytasks">
                     <h1>Tasks</h1>
                   </NavLink>
                 )

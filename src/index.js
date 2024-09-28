@@ -17,6 +17,10 @@ import Choices from './Pages/Choices';
 import Orgform from './Pages/Orgform';
 import Myevent from './Pages/Myevent';
 import Orglanding from './Pages/Orglanding';
+import Mytasks from './Pages/Mytasks';
+import Landing from './Pages/Landing';
+import Staff from "./Pages/Staff"
+
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
@@ -34,13 +38,23 @@ const router = createBrowserRouter(
           <Route path='dashboard/:id' element={<DashBoard />} />
           <Route path='myevents' element={<Myevent />} />
         </Route>
+        <Route path='staff' element={<Staff />}>
+        </Route>
         <Route path='signup' element={<Register />} />
         <Route path='chat' element={<Chat />} />
         <Route path='profile' element={<Profile />} />
         <Route path='choices' element={<Choices />} />
         <Route path='orgform' element={<Orgform />} />
         <Route path='orglanding' element={<Orglanding />} />
-
+        <Route path='signup' element={<Register />} />
+        <Route path='chat' element={<Chat />} />
+        <Route path='profile' element={<Profile />} />
+        <Route path='choices' element={<Choices />} />
+        <Route path='orgform' element={<Orgform />} />
+        <Route path='myevent' element={<Myevent />} />
+        <Route path='orglanding' element={<Orglanding />} />
+        <Route path='landing' element={<Landing />} />
+        <Route path='mytasks' element={<Mytasks />} />
       </Route>
     </Route>
   )
